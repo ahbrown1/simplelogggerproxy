@@ -10,20 +10,23 @@ Rather than deconstructing or recreating a whole new logger object, this object 
 
 ## Sample :
 
-
 ```
 import logging
+import sys
+from loggerProxy import LoggerProxy
 
 def main() :
+    logger = LoggerProxy()
+    logger.addHandler(logging.StreamHandler(sys.stderr),)
+    logger.info('HI')
 
-    logger = LoggerFactory(handlers=logging.StreamHandler(sys.stderr))
-    print logger.formatStr  # shows default format string
+    pval = 12345
+    logger.formatStr = "%(asctime)s %(levelname)s: {custom}: -- %(message)s".format(custom=pval)
+    logger.info('HI')
 
-    logger.error('HEY!')
-    ## prints ('HEY!',)
 
-    logger.formatStr = "HERE: %(message)s"
-    logger.error('HEY!')
-    ## prints HERE: ('HEY!',)
+
+if __name__ == '__main__' :
+    sys.exit(main())
+
 ```
-NOTE:  The proxy can be given a 'name', but logging.getLogger(name) only returns the underlying logger objet, not the proxy with the additional functionality to modify the format string.
